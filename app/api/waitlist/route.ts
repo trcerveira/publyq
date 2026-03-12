@@ -1,53 +1,64 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-function getSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) throw new Error("Supabase not configured");
-  return createClient(url, key);
-}
+import { createServerClient } from "@/lib/supabase/server";
+import { WaitlistSchema, validateInput } from "@/lib/validators";
+import { checkAndConsumeRateLimit } from "@/lib/supabase/rate-limit";
+import { logAudit } from "@/lib/supabase/audit";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const email = body.email?.trim()?.toLowerCase();
+    const parsed = validateInput(WaitlistSchema, body);
 
-    if (!email || !email.includes("@") || !email.includes(".")) {
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "Invalid email." },
+        { error: parsed.error },
         { status: 400 }
       );
     }
 
-    const supabase = getSupabase();
+    // Rate limit by IP (no auth needed for waitlist)
+    const ip = req.headers.get("x-forwarded-for") ?? "unknown";
+    const allowed = await checkAndConsumeRateLimit(ip, "waitlist");
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "Muitos pedidos. Tenta novamente amanhã." },
+        { status: 429 }
+      );
+    }
 
+    const supabase = createServerClient();
     const { error } = await supabase
       .from("waitlist")
-      .insert({ email });
+      .insert({ email: parsed.data.email });
 
     if (error) {
       if (error.code === "23505") {
         return NextResponse.json(
-          { error: "This email is already on the list!" },
+          { error: "Este email já está na lista!" },
           { status: 409 }
         );
       }
       console.error("Supabase error:", error);
       return NextResponse.json(
-        { error: "Failed to save. Try again." },
+        { error: "Erro ao guardar. Tenta novamente." },
         { status: 500 }
       );
     }
 
+    logAudit({
+      action: "waitlist.join",
+      userId: ip,
+      metadata: { email: parsed.data.email },
+    });
+
     return NextResponse.json(
-      { message: "Added to the waitlist!" },
+      { message: "Estás na lista! Avisamos quando lançarmos." },
       { status: 200 }
     );
   } catch (err) {
     console.error("Waitlist error:", err);
     return NextResponse.json(
-      { error: "Internal error. Try again." },
+      { error: "Erro interno. Tenta novamente." },
       { status: 500 }
     );
   }

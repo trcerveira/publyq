@@ -43,3 +43,6 @@ waitlist.json
 .env.local
 
 .vercel
+
+# clerk configuration (can include secrets)
+/.clerk/
