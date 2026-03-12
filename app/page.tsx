@@ -22,15 +22,15 @@ export default function Home() {
 
       if (res.ok) {
         setStatus("success");
-        setMessage("Estás na lista. Vamos avisar-te quando lançarmos.");
+        setMessage("You're on the list. We'll let you know when we launch.");
         setEmail("");
       } else {
         setStatus("error");
-        setMessage(data.error || "Algo correu mal. Tenta novamente.");
+        setMessage(data.error || "Something went wrong. Try again.");
       }
     } catch {
       setStatus("error");
-      setMessage("Erro de ligação. Tenta novamente.");
+      setMessage("Connection error. Try again.");
     }
   }
 
@@ -45,7 +45,7 @@ export default function Home() {
           href="#waitlist"
           className="text-sm font-medium text-muted hover:text-foreground transition-colors"
         >
-          Lista de Espera
+          Waitlist
         </a>
       </nav>
 
@@ -55,18 +55,18 @@ export default function Home() {
           <div className="max-w-2xl mx-auto space-y-8">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent/20 bg-accent/5 text-xs font-medium text-accent tracking-wide uppercase">
               <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-              Lista de espera aberta
+              Waitlist open
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.1] tracking-tight">
-              7 dias de conteúdo.
+              7 days of content.
               <br />
-              <span className="text-accent">1 hora.</span>
+              <span className="text-accent">1 hour.</span>
             </h1>
 
             <p className="text-base sm:text-lg text-muted max-w-lg mx-auto leading-relaxed">
-              O método que transforma 1 hora por semana em conteúdo
-              publicado para todas as plataformas — na tua voz, não na voz de um robô.
+              The method that turns 1 hour per week into published content
+              across every platform — in your voice, not a robot&apos;s.
             </p>
 
             {/* Waitlist Form */}
@@ -81,7 +81,7 @@ export default function Home() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="o-teu@email.com"
+                    placeholder="your@email.com"
                     required
                     className="flex-1 px-4 py-3 rounded-lg bg-surface border border-white/10 text-foreground text-sm placeholder:text-muted/60 focus:outline-none focus:border-accent/40 focus:ring-1 focus:ring-accent/20 transition-all"
                   />
@@ -90,7 +90,7 @@ export default function Home() {
                     disabled={status === "loading"}
                     className="px-6 py-3 rounded-lg bg-accent text-background text-sm font-semibold hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer"
                   >
-                    {status === "loading" ? "A enviar..." : "Quero Acesso"}
+                    {status === "loading" ? "Joining..." : "Get Early Access"}
                   </button>
                 </form>
               )}
@@ -98,7 +98,7 @@ export default function Home() {
                 <p className="text-red-400 text-xs mt-2">{message}</p>
               )}
               <p className="text-muted/50 text-xs mt-3">
-                Sem spam. Avisamos quando estiver pronto.
+                No spam. We only email when we launch.
               </p>
             </div>
           </div>
@@ -114,7 +114,7 @@ export default function Home() {
           <div className="text-center mb-16">
             <p className="text-xs font-medium text-accent tracking-widest uppercase mb-3">Content Machine Method</p>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
-              Quatro camadas. Um sistema.
+              Four layers. One system.
             </h2>
           </div>
 
@@ -122,23 +122,23 @@ export default function Home() {
             {[
               {
                 step: "01",
-                title: "Fundação",
-                desc: "Define o teu Brand DNA e Voice DNA. O AI aprende a tua voz — uma única vez.",
+                title: "Foundation",
+                desc: "Define your Brand DNA and Voice DNA. The AI learns your voice — once.",
               },
               {
                 step: "02",
-                title: "Máquina",
-                desc: "Batch Day: 1 hora, 1 dia por semana. Todo o conteúdo da semana gerado de uma vez.",
+                title: "Machine",
+                desc: "Batch Day: 1 hour, 1 day per week. An entire week of content generated at once.",
               },
               {
                 step: "03",
                 title: "Kaizen",
-                desc: "Review Day: o sistema analisa métricas, identifica o que funciona, e ajusta o próximo ciclo.",
+                desc: "Review Day: the system analyzes metrics, finds what works, and adjusts the next cycle.",
               },
               {
                 step: "04",
-                title: "Escala",
-                desc: "Multi-plataforma, multi-formato. Um input, conteúdo adaptado para cada canal.",
+                title: "Scale",
+                desc: "Multi-platform, multi-format. One input, content adapted for every channel.",
               },
             ].map((item) => (
               <div
@@ -162,16 +162,16 @@ export default function Home() {
         <section className="px-6 py-28 max-w-3xl mx-auto">
           <div className="text-center mb-14">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
-              O problema que toda a gente ignora
+              The problem everyone ignores
             </h2>
           </div>
 
           <div className="space-y-3">
             {[
-              "Passas mais tempo a pensar no que publicar do que a trabalhar no teu negócio.",
-              "O conteúdo que o AI gera não soa a ti — soa a qualquer pessoa.",
-              "Publicas quando te lembras. Sem plano. Sem consistência.",
-              "Não sabes o que funciona porque nunca medes nada.",
+              "You spend more time thinking about what to post than actually working on your business.",
+              "AI-generated content doesn't sound like you — it sounds like everyone else.",
+              "You publish when you remember. No plan. No consistency.",
+              "You don't know what's working because you never measure anything.",
             ].map((pain, i) => (
               <div key={i} className="flex items-start gap-4 p-5 rounded-lg border border-white/5 bg-surface/30">
                 <span className="w-1 h-1 rounded-full bg-muted/40 mt-2.5 shrink-0" />
@@ -182,9 +182,9 @@ export default function Home() {
 
           <div className="mt-12 text-center">
             <p className="text-base font-medium leading-relaxed">
-              O Content Machine Method resolve tudo isto com um sistema
+              The Content Machine Method solves all of this with a system
               <br className="hidden sm:block" />
-              que <span className="text-accent">melhora automaticamente</span> a cada semana.
+              that <span className="text-accent">improves automatically</span> every week.
             </p>
           </div>
         </section>
@@ -199,16 +199,16 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
             {[
               {
-                title: "A tua voz. Não a de um robô.",
-                desc: "O PUBLYQ aprende o teu tom, vocabulário e estilo. O conteúdo gerado é indistinguível do que escreverias tu — porque parte de ti.",
+                title: "Your voice. Not a robot's.",
+                desc: "PUBLYQ learns your tone, vocabulary, and style. The content it generates is indistinguishable from what you'd write — because it starts from you.",
               },
               {
-                title: "Batch creation. Não um post de cada vez.",
-                desc: "Uma sessão de 1 hora gera conteúdo para a semana inteira. Texto, carrosséis, email — tudo adaptado a cada plataforma.",
+                title: "Batch creation. Not one post at a time.",
+                desc: "One 1-hour session generates content for the entire week. Text, carousels, email — all adapted to each platform.",
               },
               {
-                title: "Kaizen Loop. O moat.",
-                desc: "Cada semana o sistema analisa o que funcionou e ajusta o próximo ciclo. Semana 12 é dramaticamente melhor que semana 1.",
+                title: "Kaizen Loop. The moat.",
+                desc: "Every week the system analyzes what worked and adjusts the next cycle. Week 12 is dramatically better than week 1.",
               },
             ].map((item, i) => (
               <div key={i}>
@@ -228,17 +228,17 @@ export default function Home() {
         <section className="px-6 py-28 text-center">
           <div className="max-w-md mx-auto space-y-6">
             <h2 className="text-2xl font-bold tracking-tight">
-              Acesso antecipado
+              Early access
             </h2>
             <p className="text-muted text-sm leading-relaxed">
-              Estamos a construir o PUBLYQ para um grupo selecto de criadores
-              e solopreneurs. Inscreve-te para seres dos primeiros.
+              We&apos;re building PUBLYQ for a select group of creators
+              and solopreneurs. Sign up to be among the first.
             </p>
             <a
               href="#waitlist"
               className="inline-block px-8 py-3.5 rounded-lg bg-accent text-background text-sm font-semibold hover:bg-accent/90 transition-colors"
             >
-              Quero Acesso
+              Get Early Access
             </a>
           </div>
         </section>

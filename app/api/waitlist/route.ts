@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 
     if (!email || !email.includes("@") || !email.includes(".")) {
       return NextResponse.json(
-        { error: "Email inválido." },
+        { error: "Invalid email." },
         { status: 400 }
       );
     }
@@ -29,25 +29,25 @@ export async function POST(req: NextRequest) {
     if (error) {
       if (error.code === "23505") {
         return NextResponse.json(
-          { error: "Este email já está na lista!" },
+          { error: "This email is already on the list!" },
           { status: 409 }
         );
       }
       console.error("Supabase error:", error);
       return NextResponse.json(
-        { error: "Erro ao guardar. Tenta novamente." },
+        { error: "Failed to save. Try again." },
         { status: 500 }
       );
     }
 
     return NextResponse.json(
-      { message: "Adicionado à lista de espera!" },
+      { message: "Added to the waitlist!" },
       { status: 200 }
     );
   } catch (err) {
     console.error("Waitlist error:", err);
     return NextResponse.json(
-      { error: "Erro interno. Tenta novamente." },
+      { error: "Internal error. Try again." },
       { status: 500 }
     );
   }
