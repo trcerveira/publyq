@@ -43,12 +43,6 @@ export default function Home() {
         <Image src="/logo-publyq.jpeg" alt="PUBLYQ" width={140} height={36} className="h-9 w-auto" />
         <div className="flex items-center gap-4">
           <a
-            href="#pricing"
-            className="text-sm font-medium text-muted hover:text-foreground transition-colors"
-          >
-            Preços
-          </a>
-          <a
             href="#waitlist"
             className="text-sm font-medium text-muted hover:text-foreground transition-colors"
           >
@@ -165,7 +159,7 @@ export default function Home() {
               },
               {
                 step: "03",
-                title: "Kaizen",
+                title: "REFINE Loop",
                 desc: "O sistema analisa métricas, descobre o que funciona e ajusta o próximo ciclo. Cada semana melhor que a anterior.",
               },
             ].map((item) => (
@@ -191,11 +185,11 @@ export default function Home() {
           <div className="text-center mb-16">
             <p className="text-xs font-medium text-accent tracking-widest uppercase mb-3">Como Funciona</p>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
-              3 passos. Conteúdo na tua voz.
+              4 passos. Conteúdo na tua voz.
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
                 step: "1",
@@ -213,6 +207,13 @@ export default function Home() {
               },
               {
                 step: "3",
+                icon: "📝",
+                title: "Linhas Editoriais",
+                desc: "O sistema gera linhas editoriais alinhadas com a tua marca. Temas, ângulos e hooks prontos para a semana.",
+                time: "5 min (semanal)",
+              },
+              {
+                step: "4",
                 icon: "🎠",
                 title: "Carrossel",
                 desc: "Escolhes o tema, o sistema gera carrosséis profissionais prontos a publicar. Uma manhã = 7 dias de conteúdo.",
@@ -259,7 +260,7 @@ export default function Home() {
                 desc: "Uma sessão de manhã gera conteúdo para a semana inteira. Texto, carrosséis, email — tudo adaptado a cada plataforma.",
               },
               {
-                title: "Kaizen Loop. O moat.",
+                title: "REFINE Loop. O moat.",
                 desc: "Todas as semanas o sistema analisa o que funcionou e ajusta o próximo ciclo. A semana 12 é dramaticamente melhor que a semana 1.",
               },
             ].map((item, i) => (
@@ -276,92 +277,7 @@ export default function Home() {
           <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
         </div>
 
-        {/* 6. Pricing */}
-        <section id="pricing" className="px-6 py-28 max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-xs font-medium text-accent tracking-widest uppercase mb-3">Preço</p>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
-              Menos que um café por dia.
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-            {/* Traditional way */}
-            <div className="p-8 rounded-2xl border border-white/5 bg-surface/30">
-              <p className="text-xs font-medium text-muted tracking-widest uppercase mb-4">Método tradicional</p>
-              <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-3xl font-bold text-muted line-through">€1.400</span>
-                <span className="text-muted text-sm">/mês</span>
-              </div>
-              <ul className="space-y-3 mt-6 text-sm text-muted">
-                <li className="flex items-start gap-3">
-                  <span className="text-red-400 mt-0.5">✕</span>
-                  <span>Social media manager (€800/mês)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-red-400 mt-0.5">✕</span>
-                  <span>Designer gráfico (€400/mês)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-red-400 mt-0.5">✕</span>
-                  <span>Copywriter (€200/mês)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-red-400 mt-0.5">✕</span>
-                  <span>Semanas de espera por revisões</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* PUBLYQ */}
-            <div className="p-8 rounded-2xl border-2 border-accent/30 bg-accent/5 relative">
-              <div className="absolute -top-3 left-6 px-3 py-1 rounded-full bg-accent text-background text-xs font-semibold">
-                Recomendado
-              </div>
-              <p className="text-xs font-medium text-accent tracking-widest uppercase mb-4">PUBLYQ</p>
-              <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-4xl font-bold">€99</span>
-                <span className="text-muted text-sm">/mês</span>
-              </div>
-              <ul className="space-y-3 mt-6 text-sm">
-                <li className="flex items-start gap-3">
-                  <span className="text-accent mt-0.5">✓</span>
-                  <span>Brand DNA + Voice DNA personalizados</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-accent mt-0.5">✓</span>
-                  <span>Carrosséis profissionais ilimitados</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-accent mt-0.5">✓</span>
-                  <span>Conteúdo para todas as plataformas</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-accent mt-0.5">✓</span>
-                  <span>Kaizen Loop — melhora a cada semana</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-accent mt-0.5">✓</span>
-                  <span>Na tua voz, não na de um robô</span>
-                </li>
-              </ul>
-              <Link
-                href="/sign-up"
-                className="mt-8 block w-full text-center px-6 py-3.5 rounded-lg bg-accent text-background text-sm font-semibold hover:bg-accent/90 transition-colors"
-              >
-                Começar Grátis
-              </Link>
-              <p className="text-center text-muted/50 text-xs mt-3">7 dias grátis. Cancela quando quiseres.</p>
-            </div>
-          </div>
-        </section>
-
-        {/* Divider */}
-        <div className="w-full max-w-6xl mx-auto px-6">
-          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-        </div>
-
-        {/* 7. Testimonials (placeholder) */}
+        {/* 6. Testimonials (placeholder) */}
         <section className="px-6 py-28 max-w-4xl mx-auto">
           <div className="text-center mb-16">
             <p className="text-xs font-medium text-accent tracking-widest uppercase mb-3">Testemunhos</p>
@@ -449,7 +365,6 @@ export default function Home() {
             <span>&copy; 2026</span>
           </span>
           <div className="flex items-center gap-4">
-            <a href="#pricing" className="hover:text-foreground transition-colors">Preços</a>
             <a href="#how-it-works" className="hover:text-foreground transition-colors">Como funciona</a>
             <a href="#waitlist" className="hover:text-foreground transition-colors">Waitlist</a>
           </div>
