@@ -12,12 +12,12 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "PUBLYQ — 7 dias de conteúdo. Uma manhã.",
-  description: "O método que transforma uma manhã por semana em conteúdo publicado para toda a semana — na tua voz, não na de um robô.",
-  keywords: ["conteúdo", "IA", "marca pessoal", "brand DNA", "voice DNA", "kaizen", "solopreneur", "Instagram"],
+  title: "PUBLYQ — Cria o conteúdo de uma semana numa manhã",
+  description: "A equipa de conteúdo IA para PMEs portuguesas. Brand DNA + Voice DNA + Carrosséis Instagram.",
+  keywords: ["conteúdo", "IA", "marca pessoal", "brand DNA", "voice DNA", "kaizen", "solopreneur", "Instagram", "carrossel"],
   openGraph: {
-    title: "PUBLYQ — 7 dias de conteúdo. Uma manhã.",
-    description: "O método que transforma uma manhã por semana em conteúdo publicado para toda a semana.",
+    title: "PUBLYQ",
+    description: "Cria o conteúdo de uma semana numa manhã.",
     type: "website",
     url: "https://publyq.ai",
   },
