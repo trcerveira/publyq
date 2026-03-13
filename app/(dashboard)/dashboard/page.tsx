@@ -7,6 +7,7 @@ import Link from "next/link";
 interface Progress {
   brandDnaComplete: boolean;
   voiceDnaComplete: boolean;
+  editorialComplete: boolean;
 }
 
 export default function DashboardPage() {
@@ -14,6 +15,7 @@ export default function DashboardPage() {
   const [progress, setProgress] = useState<Progress>({
     brandDnaComplete: false,
     voiceDnaComplete: false,
+    editorialComplete: false,
   });
   const [loading, setLoading] = useState(true);
 
@@ -55,19 +57,19 @@ export default function DashboardPage() {
     },
     {
       number: "03",
-      title: "Carrossel Instagram",
-      description: "Gera 7 carrosséis de uma vez — um para cada dia da semana.",
-      href: "/carousel",
-      status: progress.voiceDnaComplete ? "active" : "locked",
+      title: "Linhas Editoriais",
+      description: "A IA cria os teus pilares de conteúdo. Tu revês, editas e confirmas.",
+      href: "/editorial",
+      status: progress.editorialComplete ? "complete" : progress.voiceDnaComplete ? "active" : "locked",
       locked: !progress.voiceDnaComplete,
     },
     {
       number: "04",
-      title: "REFINE Loop",
-      description: "Insere métricas, analisa o que funciona, melhora o próximo ciclo.",
-      href: "/kaizen",
-      status: progress.voiceDnaComplete ? "active" : "locked",
-      locked: !progress.voiceDnaComplete,
+      title: "Carrossel Instagram",
+      description: "Gera carrosséis com a tua voz — prontos a publicar.",
+      href: "/carousel",
+      status: progress.editorialComplete ? "active" : "locked",
+      locked: !progress.editorialComplete,
     },
   ];
 

@@ -10,6 +10,8 @@ export type AuditAction =
   | "brand_dna.save"
   | "voice_dna.generate"
   | "voice_dna.save"
+  | "editorial.generate"
+  | "editorial.confirm"
   | "carousel.generate"
   | "carousel.export"
   | "profile.update"
@@ -139,6 +141,32 @@ export interface CarouselPalette {
   surface: string;
   accent:  string;
   text:    string;
+}
+
+// ── Table: editorial_lines ────────────────────────────────────
+
+export interface EditorialLinesRecord {
+  id:         string;
+  user_id:    string;
+  lines:      EditorialLine[];
+  resumo:     string | null;
+  status:     "draft" | "confirmed";
+  version:    number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EditorialLine {
+  id:           string;   // pilar-1, pilar-2, etc.
+  nome:         string;
+  descricao:    string;
+  temas:        string[];
+  percentagem:  number;
+}
+
+export interface EditorialProfile {
+  linhas:  EditorialLine[];
+  resumo:  string;
 }
 
 // ── Table: waitlist ─────────────────────────────────────────

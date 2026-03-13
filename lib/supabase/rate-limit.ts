@@ -9,6 +9,7 @@ import { createServerClient } from "@/lib/supabase/server";
 const DAILY_LIMITS: Record<string, number> = {
   "brand-dna":   5,   // AI-intensive, one-time setup
   "voice-dna":   5,   // AI-intensive, one-time setup
+  "editorial":   5,   // AI-intensive, one-time setup
   "carousel":    20,  // Core feature, batch creation
   "kaizen":      10,  // Analysis endpoint
   "waitlist":     5,  // Public, spam prevention

@@ -13,7 +13,7 @@ export async function GET() {
     // Sync profile on every dashboard load
     const email = (sessionClaims?.email as string) ?? "";
     const name = (sessionClaims?.name as string) ?? null;
-    await syncUserProfile({ clerkId: userId, email, name });
+    await syncUserProfile({ userId, email, name });
 
     const progress = await getUserProgress(userId);
 

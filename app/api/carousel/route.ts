@@ -20,11 +20,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    // Gate: Both Brand DNA and Voice DNA must be complete
+    // Gate: Brand DNA, Voice DNA, and Editorial Lines must be complete
     const progress = await getUserProgress(userId);
-    if (!progress.brandDnaComplete || !progress.voiceDnaComplete) {
+    if (!progress.brandDnaComplete || !progress.voiceDnaComplete || !progress.editorialComplete) {
       return NextResponse.json(
-        { error: "Completa o Brand DNA e Voice DNA primeiro." },
+        { error: "Completa o Brand DNA, Voice DNA e Linhas Editoriais primeiro." },
         { status: 403 }
       );
     }
