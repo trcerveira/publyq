@@ -1,5 +1,6 @@
 // ============================================================
 // PUBLYQ — TypeScript types for Supabase tables
+// Matches migration 011_publyq_schema.sql
 // ============================================================
 
 // ── Audit Actions ───────────────────────────────────────────
@@ -10,35 +11,50 @@ export type AuditAction =
   | "voice_dna.generate"
   | "voice_dna.save"
   | "carousel.generate"
-  | "carousel.batch"
-  | "kaizen.analyze"
-  | "kaizen.save_metrics"
+  | "carousel.export"
   | "profile.update"
+  | "user.sync"
   | "waitlist.join"
 ;
 
-// ── Table: user_profiles ────────────────────────────────────
+// ── Table: user_profiles (PK = user_id TEXT) ────────────────
 
 export interface UserProfile {
-  id:                string;
-  clerk_id:          string;
-  email:             string;
-  name:              string | null;
+  user_id:            string;   // Clerk ID (user_xxxxxxx)
+  email:              string;
+  name:               string | null;
   brand_dna_complete: boolean;
-  voice_dna_complete: boolean;
-  created_at:        string;
-  updated_at:        string;
+  voice_dna_complete: boolean;  // = voz_dna_complete in DB
+  brand_bg:           string | null;
+  brand_surface:      string | null;
+  brand_accent:       string | null;
+  brand_text:         string | null;
+  created_at:         string;
+  updated_at:         string;
 }
 
 // ── Table: brand_profiles ───────────────────────────────────
 
 export interface BrandProfile {
-  id:         string;
-  clerk_id:   string;
-  answers:    Record<string, string>;
-  brand_card: BrandDNACard | null;
-  created_at: string;
-  updated_at: string;
+  id:               string;
+  user_id:          string;
+  brand_name:       string | null;
+  mission:          string | null;
+  values:           string[] | null;
+  target_audience:  string | null;
+  positioning:      string | null;
+  personality:      BrandPersonality | null;
+  differentiator:   string | null;
+  brand_dna_output: BrandDNACard | null;
+  version:          number;
+  created_at:       string;
+  updated_at:       string;
+}
+
+export interface BrandPersonality {
+  tone:       string;
+  energy:     string;
+  formality:  string;
 }
 
 export interface BrandDNACard {
@@ -77,9 +93,10 @@ export interface BrandDNACard {
 
 export interface VoiceProfile {
   id:         string;
-  clerk_id:   string;
+  user_id:    string;
   answers:    Record<string, string>;
-  voice_card: VoiceDNACard | null;
+  voice_dna:  VoiceDNACard | null;
+  version:    number;
   created_at: string;
   updated_at: string;
 }
@@ -97,15 +114,16 @@ export interface VoiceDNACard {
 // ── Table: generated_carousels ──────────────────────────────
 
 export interface GeneratedCarousel {
-  id:           string;
-  clerk_id:     string;
-  batch_id:     string;       // groups 7 carousels together
-  day_of_week:  number;       // 1=Mon, 2=Tue, ..., 7=Sun
-  topic:        string;
-  slides:       CarouselSlide[];
-  caption:      string | null;
-  hashtags:     string[] | null;
-  created_at:   string;
+  id:          string;
+  user_id:     string;
+  topic:       string;
+  slides:      CarouselSlide[];
+  keywords:    string[] | null;
+  palette:     CarouselPalette | null;
+  status:      "draft" | "exported" | "published";
+  exported_at: string | null;
+  deleted_at:  string | null;
+  created_at:  string;
 }
 
 export interface CarouselSlide {
@@ -116,18 +134,11 @@ export interface CarouselSlide {
   imageUrl?:   string;
 }
 
-// ── Table: carousel_metrics (Kaizen) ────────────────────────
-
-export interface CarouselMetrics {
-  id:           string;
-  carousel_id:  string;
-  likes:        number;
-  comments:     number;
-  saves:        number;
-  shares:       number;
-  reach:        number;
-  recorded_at:  string;
-  created_at:   string;
+export interface CarouselPalette {
+  bg:      string;
+  surface: string;
+  accent:  string;
+  text:    string;
 }
 
 // ── Table: waitlist ─────────────────────────────────────────
