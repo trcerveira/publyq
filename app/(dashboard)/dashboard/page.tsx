@@ -63,7 +63,7 @@ export default function DashboardPage() {
     },
     {
       number: "04",
-      title: "Kaizen",
+      title: "REFINE Loop",
       description: "Insere métricas, analisa o que funciona, melhora o próximo ciclo.",
       href: "/kaizen",
       status: progress.voiceDnaComplete ? "active" : "locked",
