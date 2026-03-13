@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import type { BrandDNACard, VoiceDNACard } from "@/lib/supabase/types";
 
@@ -100,6 +100,17 @@ const VOICE_QUESTIONS = [
   },
 ];
 
+// ── Screen 14 — Multiple choice options ─────────────────────
+
+const POSICAO_OPTIONS = [
+  { id: "rebelde", label: "O Rebelde", desc: "Dizes o que outros têm medo de dizer. Desafias o status quo." },
+  { id: "mentor", label: "O Mentor", desc: "Guias com experiência. As pessoas confiam em ti." },
+  { id: "especialista", label: "O Especialista", desc: "Dominas o assunto. Dados e profundidade." },
+  { id: "amigo", label: "O Amigo", desc: "Falas de igual para igual. Acessível e próximo." },
+  { id: "provocador", label: "O Provocador", desc: "Confrontas. Incomodas de propósito para fazer pensar." },
+  { id: "estrategista", label: "O Estrategista", desc: "Mostras o caminho. Sistemas e planos claros." },
+];
+
 // ── Props ───────────────────────────────────────────────────
 
 interface Props {
@@ -135,6 +146,8 @@ export default function HeroJourneyOnboarding({
   const [voiceCard, setVoiceCard] = useState<VoiceDNACard | null>(existingVoiceCard);
   const [apiLoading, setApiLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const brandAttempted = useRef(false);
+  const voiceAttempted = useRef(false);
 
   // Persist answers to sessionStorage
   useEffect(() => {
@@ -145,9 +158,10 @@ export default function HeroJourneyOnboarding({
     sessionStorage.setItem("publyq_voice_answers", JSON.stringify(voiceAnswers));
   }, [voiceAnswers]);
 
-  // Submit Brand DNA API (fires on screen 9)
+  // Submit Brand DNA API (fires once on screen 9)
   const submitBrandDNA = useCallback(async () => {
     if (brandCard || apiLoading) return;
+    brandAttempted.current = true;
     setApiLoading(true);
     setError(null);
 
@@ -167,9 +181,10 @@ export default function HeroJourneyOnboarding({
     }
   }, [brandAnswers, brandCard, apiLoading]);
 
-  // Submit Voice DNA API (fires on screen 15)
+  // Submit Voice DNA API (fires once on screen 15)
   const submitVoiceDNA = useCallback(async () => {
     if (voiceCard || apiLoading) return;
+    voiceAttempted.current = true;
     setApiLoading(true);
     setError(null);
 
@@ -189,14 +204,18 @@ export default function HeroJourneyOnboarding({
     }
   }, [voiceAnswers, voiceCard, apiLoading]);
 
-  // Trigger API calls on specific screens
+  // Trigger API calls on specific screens — once only (ref guards re-fire after error)
   useEffect(() => {
-    if (screen === 9 && !brandCard && !apiLoading) submitBrandDNA();
-  }, [screen, brandCard, apiLoading, submitBrandDNA]);
+    if (screen === 9 && !brandCard && !brandAttempted.current) {
+      submitBrandDNA();
+    }
+  }, [screen, brandCard, submitBrandDNA]);
 
   useEffect(() => {
-    if (screen === 15 && !voiceCard && !apiLoading) submitVoiceDNA();
-  }, [screen, voiceCard, apiLoading, submitVoiceDNA]);
+    if (screen === 15 && !voiceCard && !voiceAttempted.current) {
+      submitVoiceDNA();
+    }
+  }, [screen, voiceCard, submitVoiceDNA]);
 
   // Navigation
   const goNext = () => {
@@ -290,12 +309,15 @@ export default function HeroJourneyOnboarding({
               loading={apiLoading}
               ready={!!brandCard}
               error={error}
-              onRetry={submitBrandDNA}
+              onRetry={() => {
+                brandAttempted.current = false;
+                submitBrandDNA();
+              }}
             />
           )}
 
-          {/* Screens 10-14 — Voice DNA questions */}
-          {screen >= 10 && screen <= 14 && (
+          {/* Screens 10-13 — Voice DNA text questions */}
+          {screen >= 10 && screen <= 13 && (
             <QuestionView
               question={VOICE_QUESTIONS[screen - 10]}
               value={voiceAnswers[VOICE_QUESTIONS[screen - 10].key]}
@@ -307,6 +329,16 @@ export default function HeroJourneyOnboarding({
             />
           )}
 
+          {/* Screen 14 — Voice DNA Q5: Multiple choice */}
+          {screen === 14 && (
+            <MultiChoiceView
+              value={voiceAnswers.posicao}
+              onChange={(v) => updateVoice("posicao", v)}
+              onNext={goNext}
+              onBack={goBack}
+            />
+          )}
+
           {/* Screen 15 — Loading + Reveal */}
           {screen === 15 && (
             <RevealView
@@ -314,7 +346,10 @@ export default function HeroJourneyOnboarding({
               brandCard={brandCard}
               voiceCard={voiceCard}
               error={error}
-              onRetry={submitVoiceDNA}
+              onRetry={() => {
+                voiceAttempted.current = false;
+                submitVoiceDNA();
+              }}
               onNext={goNext}
             />
           )}
@@ -518,6 +553,95 @@ function QuestionView({
         {value.trim().length < question.minChars && value.trim().length > 0
           ? `Mínimo ${question.minChars} caracteres`
           : "\u00A0"}
+      </p>
+    </div>
+  );
+}
+
+// ── Multi-Choice Screen (Screen 14) ─────────────────────────
+
+function MultiChoiceView({
+  value,
+  onChange,
+  onNext,
+  onBack,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  onNext: () => void;
+  onBack: () => void;
+}) {
+  const selected = value ? value.split(", ").filter(Boolean) : [];
+
+  const toggle = (label: string) => {
+    if (selected.includes(label)) {
+      const next = selected.filter((s) => s !== label);
+      onChange(next.join(", "));
+    } else if (selected.length < 2) {
+      onChange([...selected, label].join(", "));
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <p className="text-accent/40 text-xs font-mono tracking-widest uppercase">
+        VOICE DNA
+      </p>
+
+      <h2 className="text-xl sm:text-2xl font-bold leading-tight">
+        Como queres que as pessoas te vejam?
+      </h2>
+
+      <p className="text-muted text-sm">
+        Escolhe até 2 posições que te definem.
+      </p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {POSICAO_OPTIONS.map((opt) => {
+          const isSelected = selected.includes(opt.label);
+          const isDisabled = !isSelected && selected.length >= 2;
+
+          return (
+            <button
+              key={opt.id}
+              onClick={() => toggle(opt.label)}
+              disabled={isDisabled}
+              className={`text-left p-4 rounded-xl border transition-all cursor-pointer ${
+                isSelected
+                  ? "border-accent/50 bg-accent/10"
+                  : isDisabled
+                  ? "border-white/5 bg-surface/20 opacity-40 cursor-not-allowed"
+                  : "border-white/10 bg-surface/50 hover:border-accent/30"
+              }`}
+            >
+              <p className={`text-sm font-semibold mb-1 ${isSelected ? "text-accent" : ""}`}>
+                {opt.label}
+              </p>
+              <p className="text-muted text-xs leading-relaxed">{opt.desc}</p>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="flex items-center justify-between">
+        <button
+          onClick={onBack}
+          className="text-sm text-muted hover:text-foreground transition-colors cursor-pointer"
+        >
+          Voltar
+        </button>
+
+        <button
+          onClick={onNext}
+          disabled={selected.length === 0}
+          className="px-8 py-3 bg-accent text-background font-semibold rounded-lg text-sm disabled:opacity-20 disabled:cursor-not-allowed hover:bg-accent/90 transition-colors cursor-pointer"
+        >
+          Seguinte
+        </button>
+      </div>
+
+      <p className="text-muted/30 text-xs text-right">
+        {selected.length}/2 seleccionadas
       </p>
     </div>
   );
