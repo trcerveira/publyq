@@ -7,7 +7,9 @@ const isProtectedRoute = createRouteMatcher([
   '/dashboard(.*)',
   '/brand-dna(.*)',
   '/voice-dna(.*)',
+  '/editorial(.*)',
   '/carousel(.*)',
+  '/machine(.*)',
   '/kaizen(.*)',
 ])
 

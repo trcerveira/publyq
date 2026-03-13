@@ -65,9 +65,9 @@ export default function DashboardPage() {
     },
     {
       number: "04",
-      title: "Carrossel Instagram",
-      description: "Gera carrosséis com a tua voz — prontos a publicar.",
-      href: "/carousel",
+      title: "PUBLYQ Machine",
+      description: "Gera 7 carrosséis para 7 dias — sequência psicológica automática.",
+      href: "/machine",
       status: progress.editorialComplete ? "active" : "locked",
       locked: !progress.editorialComplete,
     },

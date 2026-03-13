@@ -14,6 +14,7 @@ export type AuditAction =
   | "editorial.confirm"
   | "carousel.generate"
   | "carousel.export"
+  | "batch.generate"
   | "profile.update"
   | "user.sync"
   | "waitlist.join"

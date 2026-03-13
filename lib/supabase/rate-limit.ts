@@ -10,8 +10,9 @@ const DAILY_LIMITS: Record<string, number> = {
   "brand-dna":   5,   // AI-intensive, one-time setup
   "voice-dna":   5,   // AI-intensive, one-time setup
   "editorial":   5,   // AI-intensive, one-time setup
-  "carousel":    20,  // Core feature, batch creation
-  "kaizen":      10,  // Analysis endpoint
+  "carousel":       20,  // Core feature, single carousel
+  "carousel-batch":  3,  // PUBLYQ Machine, 7 carousels per batch
+  "kaizen":         10,  // Analysis endpoint
   "waitlist":     5,  // Public, spam prevention
 };
 

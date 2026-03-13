@@ -135,6 +135,30 @@ export const CarouselSlidesResponseSchema = z
   .min(1, "Nenhum slide gerado")
   .max(15, "Máximo 15 slides");
 
+// ── POST /api/carousel-batch (PUBLYQ Machine — 7-day batch) ─
+
+export const BatchWeekSchema = z.object({
+  weekTheme: z
+    .string()
+    .min(3, "Tema deve ter pelo menos 3 caracteres")
+    .max(500)
+    .trim(),
+});
+
+export const BatchDaySchema = z.object({
+  dia:       z.number().int().min(1).max(7),
+  sequencia: z.string().min(1),
+  pilar:     z.string().min(1),
+  angulo:    z.string().min(1),
+  template:  z.string().min(1),
+  tema:      z.string().min(1),
+  slides:    z.array(CarouselSlideSchema).min(5).max(10),
+});
+
+export const BatchResponseSchema = z.object({
+  semana: z.array(BatchDaySchema).min(7).max(7),
+});
+
 // ── Inferred types ─────────────────────────────────────────
 
 export type WaitlistInput         = z.infer<typeof WaitlistSchema>;
@@ -145,6 +169,7 @@ export type EditorialConfirmInput = z.infer<typeof EditorialConfirmSchema>;
 export type CarouselBatchInput    = z.infer<typeof CarouselBatchSchema>;
 export type KaizenMetricsInput    = z.infer<typeof KaizenMetricsSchema>;
 export type KaizenAnalyzeInput    = z.infer<typeof KaizenAnalyzeSchema>;
+export type BatchWeekInput        = z.infer<typeof BatchWeekSchema>;
 
 // ── Helper function ────────────────────────────────────────
 
