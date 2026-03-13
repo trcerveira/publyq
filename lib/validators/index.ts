@@ -15,52 +15,50 @@ export const WaitlistSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres").trim().optional(),
 });
 
-// ── POST /api/brand-dna (answers → Claude) ─────────────────
+// ── POST /api/brand-dna (6 questions → Claude) ──────────────
 
 const brandField = z.string().min(10, "Mínimo 10 caracteres").max(3000);
 
 export const BrandDNAAnswersSchema = z.object({
   answers: z.object({
-    // Block 1 — Who you serve
-    clienteIdeal:       brandField,
-    tentativasFalhadas: brandField,
-    linguagemCliente:   brandField,
-    vidaIdeal:          brandField,
-    // Block 2 — Who you are
-    especialidade:      brandField,
-    personalidade:      brandField,
-    piorMomento:        brandField,
-    erroQueEnsina:      brandField,
-    // Block 3 — What you stand for
-    irritacoes:         brandField,
-    crencas:            brandField,
-    bigIdea:            brandField,
-    proposito:          brandField,
-    visao:              brandField,
-    // Block 4 — Your promise
-    transformacao:      brandField,
-    resultados:         brandField,
-    diferencaFundamental: brandField,
-    commandersIntent:   brandField,
+    oqueFazParaQuem: brandField,
+    transformacao:   brandField,
+    irritacoes:      brandField,
+    clienteIdeal:    brandField,
+    crencas:         brandField,
+    porque:          brandField,
   }),
 });
 
-// ── POST /api/voice-dna (answers → Claude) ─────────────────
+// ── POST /api/voice-dna (5 questions → Claude) ──────────────
+
+const voiceField = z.string().min(5, "Mínimo 5 caracteres").max(2000);
 
 export const VoiceDNAAnswersSchema = z.object({
   answers: z.object({
-    tom:                 z.string().min(1, "Campo obrigatório").max(1000),
-    personagem:          z.string().min(1, "Campo obrigatório").max(1000),
-    emocao:              z.string().min(1, "Campo obrigatório").max(1000),
-    vocabularioActivo:   z.string().min(1, "Campo obrigatório").max(1000),
-    vocabularioProibido: z.string().min(1, "Campo obrigatório").max(1000),
-    frasesAssinatura:    z.string().min(1, "Campo obrigatório").max(1000),
-    estrutura:           z.string().min(1, "Campo obrigatório").max(1000),
-    posicao:             z.string().min(1, "Campo obrigatório").max(1000),
+    tom:              voiceField,
+    personagem:       voiceField,
+    vocabulario:      voiceField,
+    frasesAssinatura: voiceField,
+    posicao:          voiceField,
   }),
 });
 
 // ── POST /api/carousel (generate 7 carousels) ─────────────
+
+export const CarouselTemplateEnum = z.enum([
+  "simple-system",
+  "uncomfortable-truth",
+  "invisible-mistake",
+]);
+
+export const CarouselCtaEnum = z.enum([
+  "send-friend",
+  "comment",
+  "link-bio",
+  "other",
+  "none",
+]);
 
 export const CarouselBatchSchema = z.object({
   weekTheme: z
@@ -68,6 +66,8 @@ export const CarouselBatchSchema = z.object({
     .min(3, "Tema deve ter pelo menos 3 caracteres")
     .max(500)
     .trim(),
+  template: CarouselTemplateEnum,
+  cta: CarouselCtaEnum,
   topics: z
     .array(z.string().min(3).max(200))
     .min(1)
@@ -91,6 +91,20 @@ export const KaizenMetricsSchema = z.object({
 export const KaizenAnalyzeSchema = z.object({
   batchId: z.string().uuid("Batch ID inválido"),
 });
+
+// ── Claude response validation (carousel slides) ────────────
+
+export const CarouselSlideSchema = z.object({
+  slideNumber: z.number().int().min(1),
+  headline:    z.string().min(1),
+  body:        z.string().optional().default(""),
+  imageQuery:  z.string().optional(),
+});
+
+export const CarouselSlidesResponseSchema = z
+  .array(CarouselSlideSchema)
+  .min(1, "Nenhum slide gerado")
+  .max(15, "Máximo 15 slides");
 
 // ── Inferred types ─────────────────────────────────────────
 
