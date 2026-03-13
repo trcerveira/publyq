@@ -134,8 +134,10 @@ describe("EditorialLineSchema", () => {
   const validLine = {
     id: "pilar-1",
     nome: "Autoridade",
-    descricao: "Posicionar como especialista no nicho",
+    proposito: "Posicionar como especialista no nicho",
+    funcao: "despertar" as const,
     temas: ["dicas práticas", "case studies", "bastidores"],
+    emocao: "confiança",
     percentagem: 30,
   };
 
@@ -182,15 +184,19 @@ describe("EditorialConfirmSchema", () => {
       {
         id: "pilar-1",
         nome: "Autoridade",
-        descricao: "Content about expertise",
+        proposito: "Content about expertise",
+        funcao: "despertar" as const,
         temas: ["tips", "cases"],
+        emocao: "confiança",
         percentagem: 40,
       },
       {
         id: "pilar-2",
         nome: "Bastidores",
-        descricao: "Behind the scenes",
+        proposito: "Behind the scenes",
+        funcao: "reter" as const,
         temas: ["process", "team"],
+        emocao: "pertença",
         percentagem: 60,
       },
     ],
@@ -222,8 +228,10 @@ describe("EditorialConfirmSchema", () => {
     const lines = Array.from({ length: 11 }, (_, i) => ({
       id: `pilar-${i}`,
       nome: `Pilar ${i}`,
-      descricao: "Desc",
+      proposito: "Desc",
+      funcao: "educar" as const,
       temas: ["tema"],
+      emocao: "curiosidade",
       percentagem: 9,
     }));
     const result = EditorialConfirmSchema.safeParse({ lines, resumo: "Summary" });
@@ -235,7 +243,7 @@ describe("EditorialUpdateSchema", () => {
   it("accepts lines without resumo (optional)", () => {
     const result = EditorialUpdateSchema.safeParse({
       lines: [
-        { id: "p1", nome: "Test", descricao: "Desc", temas: ["a"], percentagem: 100 },
+        { id: "p1", nome: "Test", proposito: "Desc", funcao: "educar", temas: ["a"], emocao: "curiosidade", percentagem: 100 },
       ],
     });
     expect(result.success).toBe(true);
@@ -244,7 +252,7 @@ describe("EditorialUpdateSchema", () => {
   it("accepts lines with resumo", () => {
     const result = EditorialUpdateSchema.safeParse({
       lines: [
-        { id: "p1", nome: "Test", descricao: "Desc", temas: ["a"], percentagem: 100 },
+        { id: "p1", nome: "Test", proposito: "Desc", funcao: "educar", temas: ["a"], emocao: "curiosidade", percentagem: 100 },
       ],
       resumo: "A short summary here",
     });
@@ -256,8 +264,9 @@ describe("EditorialProfileSchema", () => {
   it("accepts valid AI response structure", () => {
     const result = EditorialProfileSchema.safeParse({
       linhas: [
-        { id: "pilar-1", nome: "Autoridade", descricao: "Desc", temas: ["a", "b"], percentagem: 50 },
-        { id: "pilar-2", nome: "Educação", descricao: "Desc", temas: ["c"], percentagem: 50 },
+        { id: "pilar-1", nome: "Autoridade", proposito: "Desc", funcao: "despertar", temas: ["a", "b"], emocao: "confiança", percentagem: 40 },
+        { id: "pilar-2", nome: "Educação", proposito: "Desc", funcao: "educar", temas: ["c"], emocao: "curiosidade", percentagem: 35 },
+        { id: "pilar-3", nome: "Identidade", proposito: "Desc", funcao: "reter", temas: ["d"], emocao: "pertença", percentagem: 25 },
       ],
       resumo: "Strategy summary",
     });
@@ -272,9 +281,24 @@ describe("EditorialProfileSchema", () => {
     expect(result.success).toBe(false);
   });
 
+  it("rejects fewer than 3 linhas", () => {
+    const result = EditorialProfileSchema.safeParse({
+      linhas: [
+        { id: "p1", nome: "A", proposito: "B", funcao: "despertar", temas: ["c"], emocao: "x", percentagem: 50 },
+        { id: "p2", nome: "B", proposito: "C", funcao: "educar", temas: ["d"], emocao: "y", percentagem: 50 },
+      ],
+      resumo: "Summary",
+    });
+    expect(result.success).toBe(false);
+  });
+
   it("rejects missing resumo", () => {
     const result = EditorialProfileSchema.safeParse({
-      linhas: [{ id: "p1", nome: "A", descricao: "B", temas: ["c"], percentagem: 100 }],
+      linhas: [
+        { id: "p1", nome: "A", proposito: "B", funcao: "despertar", temas: ["c"], emocao: "x", percentagem: 40 },
+        { id: "p2", nome: "B", proposito: "C", funcao: "educar", temas: ["d"], emocao: "y", percentagem: 35 },
+        { id: "p3", nome: "C", proposito: "D", funcao: "reter", temas: ["e"], emocao: "z", percentagem: 25 },
+      ],
     });
     expect(result.success).toBe(false);
   });

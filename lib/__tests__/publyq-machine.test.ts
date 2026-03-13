@@ -58,11 +58,11 @@ const mockVoiceCard: VoiceDNACard = {
 };
 
 const mockEditorialLines: EditorialLine[] = [
-  { id: "pilar-1", nome: "Autoridade", descricao: "Posicionar como especialista", temas: ["dicas", "frameworks", "erros comuns"], percentagem: 30 },
-  { id: "pilar-2", nome: "Bastidores", descricao: "Humanizar a marca", temas: ["processo", "rotina", "ferramentas"], percentagem: 20 },
-  { id: "pilar-3", nome: "Educação", descricao: "Ensinar e dar valor", temas: ["tutoriais", "how-to", "checklists"], percentagem: 25 },
-  { id: "pilar-4", nome: "Provocação", descricao: "Desafiar crenças", temas: ["mitos", "verdades incómodas"], percentagem: 15 },
-  { id: "pilar-5", nome: "Prova Social", descricao: "Mostrar resultados", temas: ["casos", "testemunhos", "antes/depois"], percentagem: 10 },
+  { id: "pilar-1", nome: "Autoridade", proposito: "Posicionar como especialista", funcao: "despertar", temas: ["dicas", "frameworks", "erros comuns", "confronto"], emocao: "confiança", percentagem: 30 },
+  { id: "pilar-2", nome: "Bastidores", proposito: "Humanizar a marca", funcao: "reter", temas: ["processo", "rotina", "ferramentas", "dia-a-dia"], emocao: "pertença", percentagem: 20 },
+  { id: "pilar-3", nome: "Educação", proposito: "Ensinar e dar valor", funcao: "educar", temas: ["tutoriais", "how-to", "checklists", "passos"], emocao: "curiosidade", percentagem: 25 },
+  { id: "pilar-4", nome: "Provocação", proposito: "Desafiar crenças", funcao: "despertar", temas: ["mitos", "verdades incómodas", "denúncia", "debate"], emocao: "indignação", percentagem: 15 },
+  { id: "pilar-5", nome: "Prova Social", proposito: "Mostrar resultados", funcao: "reter", temas: ["casos", "testemunhos", "antes/depois", "números"], emocao: "inspiração", percentagem: 10 },
 ];
 
 // Helper: builds a valid 7-day batch response matching the expected format

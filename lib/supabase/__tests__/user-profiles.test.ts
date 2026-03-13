@@ -163,7 +163,7 @@ describe("saveEditorialLines", () => {
   it("inserts new editorial lines when none exist", async () => {
     mockMaybeSingle.mockResolvedValue({ data: null });
 
-    const lines = [{ id: "p1", nome: "Test", descricao: "D", temas: ["a"], percentagem: 100 }];
+    const lines = [{ id: "p1", nome: "Test", proposito: "D", funcao: "educar", emocao: "curiosidade", temas: ["a"], percentagem: 100 }];
     await saveEditorialLines("user_new", lines, "Summary", "draft");
 
     expect(mockFrom).toHaveBeenCalledWith("editorial_lines");
@@ -180,7 +180,7 @@ describe("saveEditorialLines", () => {
   it("updates existing editorial lines when record exists", async () => {
     mockMaybeSingle.mockResolvedValue({ data: { id: "uuid-1", version: 2 } });
 
-    const lines = [{ id: "p1", nome: "Updated", descricao: "D", temas: ["b"], percentagem: 100 }];
+    const lines = [{ id: "p1", nome: "Updated", proposito: "D", funcao: "educar", emocao: "curiosidade", temas: ["b"], percentagem: 100 }];
     await saveEditorialLines("user_existing", lines, "Updated summary", "draft");
 
     expect(mockUpdate).toHaveBeenCalledWith(
@@ -196,7 +196,7 @@ describe("saveEditorialLines", () => {
   it("calls markEditorialComplete when status is confirmed", async () => {
     mockMaybeSingle.mockResolvedValue({ data: null });
 
-    const lines = [{ id: "p1", nome: "Final", descricao: "D", temas: ["x"], percentagem: 100 }];
+    const lines = [{ id: "p1", nome: "Final", proposito: "D", funcao: "educar", emocao: "curiosidade", temas: ["x"], percentagem: 100 }];
     await saveEditorialLines("user_confirm", lines, "Final", "confirmed");
 
     // Should have been called with user_profiles to mark complete
@@ -209,7 +209,7 @@ describe("saveEditorialLines", () => {
   it("does NOT call markEditorialComplete when status is draft", async () => {
     mockMaybeSingle.mockResolvedValue({ data: null });
 
-    const lines = [{ id: "p1", nome: "Draft", descricao: "D", temas: ["y"], percentagem: 100 }];
+    const lines = [{ id: "p1", nome: "Draft", proposito: "D", funcao: "educar", emocao: "curiosidade", temas: ["y"], percentagem: 100 }];
     await saveEditorialLines("user_draft", lines, "Draft", "draft");
 
     // Only editorial_lines should be called, not user_profiles for marking complete
@@ -239,7 +239,7 @@ describe("getEditorialLines", () => {
     const record = {
       id: "uuid-1",
       user_id: "user_has",
-      lines: [{ id: "p1", nome: "Test", descricao: "D", temas: ["a"], percentagem: 100 }],
+      lines: [{ id: "p1", nome: "Test", proposito: "D", funcao: "educar", emocao: "curiosidade", temas: ["a"], percentagem: 100 }],
       resumo: "Summary",
       status: "confirmed",
     };

@@ -50,11 +50,15 @@ export const EditorialGenerateSchema = z.object({
   // No user input needed — generated from Brand DNA + Voice DNA
 });
 
+export const EditorialFuncaoEnum = z.enum(["despertar", "educar", "reter"]);
+
 export const EditorialLineSchema = z.object({
   id:          z.string().min(1),
   nome:        z.string().min(1).max(100),
-  descricao:   z.string().min(1).max(500),
+  proposito:   z.string().min(1).max(500),
+  funcao:      EditorialFuncaoEnum,
   temas:       z.array(z.string().min(1).max(200)).min(1).max(10),
+  emocao:      z.string().min(1).max(100),
   percentagem: z.number().min(0).max(100),
 });
 
@@ -69,7 +73,7 @@ export const EditorialConfirmSchema = z.object({
 });
 
 export const EditorialProfileSchema = z.object({
-  linhas: z.array(EditorialLineSchema).min(1).max(10),
+  linhas: z.array(EditorialLineSchema).min(3).max(5),
   resumo: z.string().min(1),
 });
 

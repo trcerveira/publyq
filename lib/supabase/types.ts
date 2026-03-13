@@ -158,11 +158,13 @@ export interface EditorialLinesRecord {
 }
 
 export interface EditorialLine {
-  id:           string;   // pilar-1, pilar-2, etc.
-  nome:         string;
-  descricao:    string;
-  temas:        string[];
-  percentagem:  number;
+  id:           string;   // territorio-1, territorio-2, etc.
+  nome:         string;   // Territory name (2-4 words)
+  proposito:    string;   // What this territory does and why
+  funcao:       "despertar" | "educar" | "reter";  // Strategic function
+  temas:        string[];  // 4 content types
+  emocao:       string;   // Primary emotion this territory triggers
+  percentagem:  number;   // Distribution percentage
 }
 
 export interface EditorialProfile {

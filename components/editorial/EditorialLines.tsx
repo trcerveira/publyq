@@ -5,8 +5,10 @@ import { useState } from "react";
 interface EditorialLine {
   id: string;
   nome: string;
-  descricao: string;
+  proposito: string;
+  funcao: "despertar" | "educar" | "reter";
   temas: string[];
+  emocao: string;
   percentagem: number;
 }
 
@@ -266,12 +268,35 @@ export default function EditorialLines({
                   />
                 </div>
                 <textarea
-                  value={line.descricao}
-                  onChange={(e) => updateLine(lineIndex, "descricao", e.target.value)}
+                  value={line.proposito}
+                  onChange={(e) => updateLine(lineIndex, "proposito", e.target.value)}
                   rows={2}
                   className="w-full bg-surface/30 border border-white/5 rounded-lg px-3 py-2 text-sm placeholder:text-muted/50 focus:outline-none focus:border-accent/50 resize-none"
-                  placeholder="Descrição deste pilar"
+                  placeholder="Propósito deste território"
                 />
+                <div className="flex items-center gap-3 mt-2">
+                  <div className="flex-1">
+                    <label className="text-xs text-muted/50 mb-1 block">Função</label>
+                    <select
+                      value={line.funcao}
+                      onChange={(e) => updateLine(lineIndex, "funcao", e.target.value)}
+                      className="w-full bg-surface/30 border border-white/5 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-accent/50"
+                    >
+                      <option value="despertar">Despertar (~40%)</option>
+                      <option value="educar">Educar (~35%)</option>
+                      <option value="reter">Reter (~25%)</option>
+                    </select>
+                  </div>
+                  <div className="flex-1">
+                    <label className="text-xs text-muted/50 mb-1 block">Emoção</label>
+                    <input
+                      value={line.emocao}
+                      onChange={(e) => updateLine(lineIndex, "emocao", e.target.value)}
+                      className="w-full bg-surface/30 border border-white/5 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-accent/50"
+                      placeholder="Emoção principal"
+                    />
+                  </div>
+                </div>
               </div>
               <div className="shrink-0 text-right">
                 <input
@@ -351,14 +376,30 @@ export default function EditorialLines({
 
 // ── Pillar Card (read-only) ──────────────────────────────────
 
+const FUNCAO_LABELS: Record<string, { label: string; color: string }> = {
+  despertar: { label: "Despertar", color: "text-orange-400 bg-orange-400/10 border-orange-400/20" },
+  educar: { label: "Educar", color: "text-blue-400 bg-blue-400/10 border-blue-400/20" },
+  reter: { label: "Reter", color: "text-purple-400 bg-purple-400/10 border-purple-400/20" },
+};
+
 function PillarCard({ line }: { line: EditorialLine }) {
+  const funcaoInfo = FUNCAO_LABELS[line.funcao] ?? { label: line.funcao, color: "text-muted bg-white/5 border-white/10" };
+
   return (
     <div className="p-4 rounded-xl bg-surface/50 border border-white/5 space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-sm">{line.nome}</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="font-semibold text-sm">{line.nome}</h3>
+          <span className={`text-xs px-2 py-0.5 rounded-full border ${funcaoInfo.color}`}>
+            {funcaoInfo.label}
+          </span>
+        </div>
         <span className="text-accent text-xs font-mono">{line.percentagem}%</span>
       </div>
-      <p className="text-muted text-sm">{line.descricao}</p>
+      <p className="text-muted text-sm">{line.proposito}</p>
+      {line.emocao && (
+        <p className="text-xs text-muted/60 italic">Emoção: {line.emocao}</p>
+      )}
       <div className="flex flex-wrap gap-1.5">
         {line.temas.map((tema, i) => (
           <span
