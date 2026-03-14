@@ -32,6 +32,7 @@ vi.mock("@/lib/supabase/server", () => ({
 
 const {
   getUserProgress,
+  repairProgressFlags,
   markBrandDnaComplete,
   markVoiceDnaComplete,
   markEditorialComplete,
@@ -286,5 +287,122 @@ describe("getEditorialLines", () => {
     await getEditorialLines("user_query");
 
     expect(mockFrom).toHaveBeenCalledWith("editorial_lines");
+  });
+});
+
+describe("repairProgressFlags", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockMaybeSingle.mockResolvedValue({ data: null });
+  });
+
+  it("does nothing when no user_profiles row exists", async () => {
+    mockMaybeSingle.mockResolvedValue({ data: null });
+
+    await repairProgressFlags("user_none");
+
+    // Only one select call (user_profiles), no update
+    expect(mockUpdate).not.toHaveBeenCalled();
+  });
+
+  it("does nothing when all flags are already true", async () => {
+    mockMaybeSingle.mockResolvedValue({
+      data: {
+        brand_dna_complete: true,
+        voz_dna_complete: true,
+        editorial_complete: true,
+      },
+    });
+
+    await repairProgressFlags("user_complete");
+
+    // Should not check data tables or update
+    expect(mockUpdate).not.toHaveBeenCalled();
+  });
+
+  it("repairs brand_dna_complete when brand_profiles data exists", async () => {
+    // First call: user_profiles (flags all false)
+    // Second call: brand_profiles (data exists)
+    // Third call: voice_profiles (no data)
+    // Fourth call: editorial_lines (no data)
+    mockMaybeSingle
+      .mockResolvedValueOnce({
+        data: { brand_dna_complete: false, voz_dna_complete: true, editorial_complete: true },
+      })
+      .mockResolvedValueOnce({ data: { id: "brand-uuid" } });
+
+    await repairProgressFlags("user_repair_brand");
+
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ brand_dna_complete: true })
+    );
+  });
+
+  it("repairs voz_dna_complete when voice_profiles data exists", async () => {
+    mockMaybeSingle
+      .mockResolvedValueOnce({
+        data: { brand_dna_complete: true, voz_dna_complete: false, editorial_complete: true },
+      })
+      .mockResolvedValueOnce({ data: { id: "voice-uuid" } });
+
+    await repairProgressFlags("user_repair_voice");
+
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ voz_dna_complete: true })
+    );
+  });
+
+  it("repairs editorial_complete when confirmed editorial_lines exist", async () => {
+    mockMaybeSingle
+      .mockResolvedValueOnce({
+        data: { brand_dna_complete: true, voz_dna_complete: true, editorial_complete: false },
+      })
+      .mockResolvedValueOnce({ data: { id: "editorial-uuid" } });
+
+    await repairProgressFlags("user_repair_editorial");
+
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ editorial_complete: true })
+    );
+  });
+
+  it("repairs multiple flags at once", async () => {
+    mockMaybeSingle
+      .mockResolvedValueOnce({
+        data: { brand_dna_complete: false, voz_dna_complete: false, editorial_complete: false },
+      })
+      .mockResolvedValueOnce({ data: { id: "brand-uuid" } })   // brand exists
+      .mockResolvedValueOnce({ data: { id: "voice-uuid" } })   // voice exists
+      .mockResolvedValueOnce({ data: null });                    // no editorial
+
+    await repairProgressFlags("user_repair_multi");
+
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        brand_dna_complete: true,
+        voz_dna_complete: true,
+      })
+    );
+    // editorial_complete should NOT be in the update
+    expect(mockUpdate).not.toHaveBeenCalledWith(
+      expect.objectContaining({ editorial_complete: true })
+    );
+  });
+
+  it("skips data table checks for flags already true", async () => {
+    // brand=true, voice=false, editorial=true
+    mockMaybeSingle
+      .mockResolvedValueOnce({
+        data: { brand_dna_complete: true, voz_dna_complete: false, editorial_complete: true },
+      })
+      .mockResolvedValueOnce({ data: null }); // voice check → no data
+
+    await repairProgressFlags("user_partial");
+
+    // Should NOT call brand_profiles or editorial_lines (flags already true)
+    // Only user_profiles + voice_profiles called
+    const fromCalls = mockFrom.mock.calls.map((c: string[]) => c[0]);
+    expect(fromCalls).not.toContain("brand_profiles");
+    expect(fromCalls).not.toContain("editorial_lines");
   });
 });

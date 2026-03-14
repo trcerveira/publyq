@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { getUserProgress, syncUserProfile } from "@/lib/supabase/user-profiles";
+import { getUserProgress, syncUserProfile, repairProgressFlags } from "@/lib/supabase/user-profiles";
 
 export async function GET() {
   try {
@@ -14,6 +14,9 @@ export async function GET() {
     const email = (sessionClaims?.email as string) ?? "";
     const name = (sessionClaims?.name as string) ?? null;
     await syncUserProfile({ userId, email, name });
+
+    // Auto-repair flags for users who completed steps before pipeline fix
+    await repairProgressFlags(userId);
 
     const progress = await getUserProgress(userId);
 

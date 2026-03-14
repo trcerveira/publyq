@@ -56,6 +56,64 @@ export async function syncUserProfile({ userId, email, name }: SyncParams) {
   }
 }
 
+// Auto-repair pipeline flags from existing data
+// Fixes users who completed steps BEFORE the pipeline gating fix
+export async function repairProgressFlags(userId: string) {
+  const supabase = createServerClient();
+
+  // Read current flags
+  const { data: profile } = await supabase
+    .from("user_profiles")
+    .select("brand_dna_complete, voz_dna_complete, editorial_complete")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (!profile) return; // No profile row — nothing to repair
+
+  const updates: Record<string, unknown> = {};
+
+  // Check brand_profiles if flag is false
+  if (!profile.brand_dna_complete) {
+    const { data: brand } = await supabase
+      .from("brand_profiles")
+      .select("id")
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (brand) updates.brand_dna_complete = true;
+  }
+
+  // Check voice_profiles if flag is false
+  if (!profile.voz_dna_complete) {
+    const { data: voice } = await supabase
+      .from("voice_profiles")
+      .select("id")
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (voice) updates.voz_dna_complete = true;
+  }
+
+  // Check editorial_lines (confirmed) if flag is false
+  if (!profile.editorial_complete) {
+    const { data: editorial } = await supabase
+      .from("editorial_lines")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("status", "confirmed")
+      .maybeSingle();
+    if (editorial) updates.editorial_complete = true;
+  }
+
+  // Only write if there's something to fix
+  if (Object.keys(updates).length > 0) {
+    updates.updated_at = new Date().toISOString();
+    await supabase
+      .from("user_profiles")
+      .update(updates)
+      .eq("user_id", userId);
+    console.log(`[repair] Fixed flags for ${userId}:`, Object.keys(updates).filter(k => k !== "updated_at"));
+  }
+}
+
 // Get user pipeline progress (for dashboard gating)
 export async function getUserProgress(userId: string) {
   const supabase = createServerClient();
