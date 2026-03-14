@@ -105,7 +105,7 @@ export function buildBatchPrompt(
   const pilarsContext = editorialLines
     .map(
       (l) =>
-        `- ${l.nome} (${l.percentagem}%): ${l.descricao}. Temas: ${l.temas.join(", ")}`
+        `- ${l.nome} (${l.percentagem}%): ${l.proposito}. Temas: ${l.temas.join(", ")}`
     )
     .join("\n");
 

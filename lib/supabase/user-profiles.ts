@@ -73,22 +73,59 @@ export async function getUserProgress(userId: string) {
   };
 }
 
-// Mark Brand DNA as complete
+// Mark Brand DNA as complete (ensures profile row exists first)
 export async function markBrandDnaComplete(userId: string) {
   const supabase = createServerClient();
-  await supabase
+
+  // Ensure user_profiles row exists (upsert creates if missing)
+  const { data: existing } = await supabase
     .from("user_profiles")
-    .update({ brand_dna_complete: true, updated_at: new Date().toISOString() })
-    .eq("user_id", userId);
+    .select("user_id")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (existing) {
+    await supabase
+      .from("user_profiles")
+      .update({ brand_dna_complete: true, updated_at: new Date().toISOString() })
+      .eq("user_id", userId);
+  } else {
+    await supabase
+      .from("user_profiles")
+      .insert({
+        user_id: userId,
+        email: "",
+        brand_dna_complete: true,
+        voz_dna_complete: false,
+      });
+  }
 }
 
-// Mark Voice DNA as complete
+// Mark Voice DNA as complete (ensures profile row exists first)
 export async function markVoiceDnaComplete(userId: string) {
   const supabase = createServerClient();
-  await supabase
+
+  const { data: existing } = await supabase
     .from("user_profiles")
-    .update({ voz_dna_complete: true, updated_at: new Date().toISOString() })
-    .eq("user_id", userId);
+    .select("user_id")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (existing) {
+    await supabase
+      .from("user_profiles")
+      .update({ voz_dna_complete: true, updated_at: new Date().toISOString() })
+      .eq("user_id", userId);
+  } else {
+    await supabase
+      .from("user_profiles")
+      .insert({
+        user_id: userId,
+        email: "",
+        brand_dna_complete: false,
+        voz_dna_complete: true,
+      });
+  }
 }
 
 // Save Brand DNA profile
@@ -163,13 +200,32 @@ export async function saveVoiceProfile(
   await markVoiceDnaComplete(userId);
 }
 
-// Mark Editorial Lines as complete
+// Mark Editorial Lines as complete (ensures profile row exists first)
 export async function markEditorialComplete(userId: string) {
   const supabase = createServerClient();
-  await supabase
+
+  const { data: existing } = await supabase
     .from("user_profiles")
-    .update({ editorial_complete: true, updated_at: new Date().toISOString() })
-    .eq("user_id", userId);
+    .select("user_id")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (existing) {
+    await supabase
+      .from("user_profiles")
+      .update({ editorial_complete: true, updated_at: new Date().toISOString() })
+      .eq("user_id", userId);
+  } else {
+    await supabase
+      .from("user_profiles")
+      .insert({
+        user_id: userId,
+        email: "",
+        brand_dna_complete: false,
+        voz_dna_complete: false,
+        editorial_complete: true,
+      });
+  }
 }
 
 // Save editorial lines (draft or confirmed)

@@ -1,10 +1,10 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
-import { hasBetaAccess } from '@/lib/config/admins'
 
 // Protected routes — only authenticated users
 const isProtectedRoute = createRouteMatcher([
   '/dashboard(.*)',
+  '/onboarding(.*)',
   '/brand-dna(.*)',
   '/voice-dna(.*)',
   '/editorial(.*)',
@@ -15,18 +15,15 @@ const isProtectedRoute = createRouteMatcher([
 
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) {
-    const { userId, sessionClaims } = await auth()
+    const { userId } = await auth()
 
     // Not logged in → sign-in
     if (!userId) {
       return NextResponse.redirect(new URL('/sign-in', req.url))
     }
 
-    // Logged in but not in beta whitelist → landing page waitlist
-    const email = sessionClaims?.email as string | undefined
-    if (!hasBetaAccess(email)) {
-      return NextResponse.redirect(new URL('/#waitlist', req.url))
-    }
+    // Beta access check is done in app/(dashboard)/layout.tsx
+    // using currentUser() which runs in Node.js runtime (not edge)
   }
 })
 

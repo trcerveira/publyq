@@ -12,12 +12,13 @@ function parseEmailList(envVar: string | undefined, defaults: string[]): string[
 
 export const SUPER_ADMINS: string[] = parseEmailList(
   process.env.SUPER_ADMINS,
-  ["trcerveira@gmail.com"]
+  ["trcerveira@gmail.com", "teo.ptpokerstars@gmail.com"]
 );
 
 // Beta whitelist — only these users can access the dashboard
 export const BETA_USERS: string[] = [
   "trcerveira@gmail.com",
+  "teo.ptpokerstars@gmail.com",
   "miguel.rodrigues@imomaster.com",
   "geral@arm-lda.com",
   "cleciofwise@hotmail.com",

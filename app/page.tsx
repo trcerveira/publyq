@@ -3,8 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useUser } from "@clerk/nextjs";
 
 export default function Home() {
+  const { isSignedIn } = useUser();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -49,10 +51,10 @@ export default function Home() {
             Waitlist
           </a>
           <Link
-            href="/sign-in"
+            href={isSignedIn ? "/dashboard" : "/sign-in"}
             className="text-sm font-medium text-accent hover:text-accent/80 transition-colors"
           >
-            Entrar
+            {isSignedIn ? "Dashboard" : "Entrar"}
           </Link>
         </div>
       </nav>

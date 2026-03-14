@@ -9,11 +9,20 @@ export default function BrandDNAPage() {
   const router = useRouter();
   const [existingCard, setExistingCard] = useState<BrandDNACard | null>(null);
   const [loading, setLoading] = useState(true);
-  const [justCompleted, setJustCompleted] = useState(false);
 
   useEffect(() => {
     async function loadExisting() {
       try {
+        // If brand DNA not complete, redirect to hero journey onboarding
+        const progressRes = await fetch("/api/progress");
+        if (progressRes.ok) {
+          const progress = await progressRes.json();
+          if (!progress.brandDnaComplete) {
+            router.replace("/onboarding");
+            return;
+          }
+        }
+
         const res = await fetch("/api/brand-dna");
         if (res.ok) {
           const data = await res.json();
@@ -26,12 +35,7 @@ export default function BrandDNAPage() {
       }
     }
     loadExisting();
-  }, []);
-
-  const handleComplete = (card: BrandDNACard) => {
-    setExistingCard(card);
-    setJustCompleted(true);
-  };
+  }, [router]);
 
   if (loading) {
     return (
@@ -51,25 +55,10 @@ export default function BrandDNAPage() {
         </p>
       </div>
 
-      {justCompleted ? (
-        <div className="max-w-2xl mx-auto space-y-6">
-          <div className="p-4 rounded-xl bg-accent/10 border border-accent/30 text-center">
-            <p className="text-accent text-lg font-semibold mb-2">Brand DNA gerado com sucesso!</p>
-            <p className="text-muted text-sm mb-6">O próximo passo é definir a tua Voice DNA.</p>
-            <button
-              onClick={() => router.push("/voice-dna")}
-              className="px-6 py-2.5 bg-accent text-background font-semibold rounded-lg text-sm hover:bg-accent/90 transition-colors"
-            >
-              Continuar para Voice DNA
-            </button>
-          </div>
-        </div>
-      ) : (
-        <BrandDNAAssessment
-          existingCard={existingCard}
-          onComplete={handleComplete}
-        />
-      )}
+      <BrandDNAAssessment
+        existingCard={existingCard}
+        onComplete={() => { router.push("/dashboard"); }}
+      />
     </div>
   );
 }

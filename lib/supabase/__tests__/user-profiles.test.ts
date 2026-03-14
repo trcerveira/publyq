@@ -111,14 +111,24 @@ describe("markBrandDnaComplete", () => {
     vi.clearAllMocks();
   });
 
-  it("updates user_profiles with brand_dna_complete true", async () => {
+  it("updates existing user_profiles row with brand_dna_complete true", async () => {
+    mockMaybeSingle.mockResolvedValue({ data: { user_id: "user_brand" } });
     await markBrandDnaComplete("user_brand");
 
     expect(mockFrom).toHaveBeenCalledWith("user_profiles");
     expect(mockUpdate).toHaveBeenCalledWith(
       expect.objectContaining({ brand_dna_complete: true })
     );
-    expect(mockEq).toHaveBeenCalledWith("user_id", "user_brand");
+  });
+
+  it("inserts new row if user_profiles does not exist", async () => {
+    mockMaybeSingle.mockResolvedValue({ data: null });
+    await markBrandDnaComplete("user_new");
+
+    expect(mockFrom).toHaveBeenCalledWith("user_profiles");
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({ user_id: "user_new", brand_dna_complete: true })
+    );
   });
 });
 
@@ -127,14 +137,24 @@ describe("markVoiceDnaComplete", () => {
     vi.clearAllMocks();
   });
 
-  it("updates user_profiles with voz_dna_complete true", async () => {
+  it("updates existing user_profiles row with voz_dna_complete true", async () => {
+    mockMaybeSingle.mockResolvedValue({ data: { user_id: "user_voice" } });
     await markVoiceDnaComplete("user_voice");
 
     expect(mockFrom).toHaveBeenCalledWith("user_profiles");
     expect(mockUpdate).toHaveBeenCalledWith(
       expect.objectContaining({ voz_dna_complete: true })
     );
-    expect(mockEq).toHaveBeenCalledWith("user_id", "user_voice");
+  });
+
+  it("inserts new row if user_profiles does not exist", async () => {
+    mockMaybeSingle.mockResolvedValue({ data: null });
+    await markVoiceDnaComplete("user_new");
+
+    expect(mockFrom).toHaveBeenCalledWith("user_profiles");
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({ user_id: "user_new", voz_dna_complete: true })
+    );
   });
 });
 
@@ -143,14 +163,24 @@ describe("markEditorialComplete", () => {
     vi.clearAllMocks();
   });
 
-  it("updates user_profiles with editorial_complete true", async () => {
+  it("updates existing user_profiles row with editorial_complete true", async () => {
+    mockMaybeSingle.mockResolvedValue({ data: { user_id: "user_edit" } });
     await markEditorialComplete("user_edit");
 
     expect(mockFrom).toHaveBeenCalledWith("user_profiles");
     expect(mockUpdate).toHaveBeenCalledWith(
       expect.objectContaining({ editorial_complete: true })
     );
-    expect(mockEq).toHaveBeenCalledWith("user_id", "user_edit");
+  });
+
+  it("inserts new row if user_profiles does not exist", async () => {
+    mockMaybeSingle.mockResolvedValue({ data: null });
+    await markEditorialComplete("user_new");
+
+    expect(mockFrom).toHaveBeenCalledWith("user_profiles");
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({ user_id: "user_new", editorial_complete: true })
+    );
   });
 });
 

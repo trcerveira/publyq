@@ -3,14 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import EditorialLines from "@/components/editorial/EditorialLines";
-
-interface EditorialLine {
-  id: string;
-  nome: string;
-  descricao: string;
-  temas: string[];
-  percentagem: number;
-}
+import type { EditorialLine } from "@/lib/supabase/types";
 
 export default function EditorialPage() {
   const router = useRouter();
